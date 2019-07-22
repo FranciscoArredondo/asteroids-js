@@ -1,7 +1,7 @@
 let canvas;
 let ctx;
-let canvasWidth = 1400;
-let canvasHeight = 1000;
+let canvasWidth = 1080;
+let canvasHeight = 720;
 let ship;
 let keys = [];
 let bullets = [];
@@ -15,7 +15,7 @@ class Bullet {
     this.angle = angle;
     this.height = 4;
     this.width = 4;
-    this.speed = 1;
+    this.speed = 5;
     this.velocity = 0;
     this.velX = 0;
     this.velY = 0;
@@ -25,10 +25,18 @@ class Bullet {
     let radians = (this.angle / Math.PI) * 180;
     this.x -= Math.cos(radians) * this.speed;
     this.y -= Math.sin(radians) * this.speed;
+
+    if (this.x > canvas.width || this.x < 0) {
+      this.visible = false;
+    }
+
+    if (this.y > canvas.height || this.y < 0) {
+      this.visible = false;
+    }
   }
 
   draw() {
-    ctx.fillyStyle = 'white';
+    ctx.fillStyle = 'white';
     ctx.fillRect(this.x, this.y, this.width, this.height);
   }
 }
@@ -160,11 +168,13 @@ const render = () => {
   ctx.clearRect(0, 0, canvasWidth, canvasHeight);
   ship.update();
   ship.draw();
-
+  bullets = bullets.filter(bullet => bullet.visible);
   if (bullets.length !== 0) {
     for (let i = 0; i < bullets.length; i++) {
-      bullets[i].update();
-      bullets[i].draw();
+      if (bullets[i].visible) {
+        bullets[i].update();
+        bullets[i].draw();
+      }
     }
   }
 
@@ -193,15 +203,12 @@ const setupCanvas = () => {
 
   document.body.addEventListener('keydown', e => {
     keys[e.keyCode] = true;
-    console.log(e);
-    console.log(keys);
   });
   document.body.addEventListener('keyup', e => {
     keys[e.keyCode] = false;
-    // console.log(bullets);
-    // if (e.keyCode === 32) {
-    //   bullets.push(new Bullet(ship.angle));
-    // }
+    if (e.keyCode === 32) {
+      bullets.push(new Bullet(ship.angle));
+    }
   });
   render();
 };
