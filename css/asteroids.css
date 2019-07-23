@@ -2,8 +2,8 @@ body {
   background: #000000;
 }
 
-#container {
-  max-width: 1400px;
+.container {
+  max-width: 1400;
   margin: auto;
 }
 
